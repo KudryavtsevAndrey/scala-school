@@ -4,7 +4,7 @@ package homework.l2
 /**
   * Вам нужно реализовать функции sumOfSquares и multiplicationOfCubes
   * при помощи ListFunctions.fold, композиции и частичного применения функций, sum, multiply и pow
-  * Можно добовлять промежуточные функции.
+  * Можно добавлять промежуточные функции.
   * Также вам может понадобится функция Function.uncurry,
   * которая из карированной функции делает функцию с несколькими аргументами
   */
@@ -19,11 +19,18 @@ object ListHomework {
   /**
     * Сумма квадратов чисел в списке
     */
-  lazy val sumOfSquares: List[Int] => Int = ???
+  lazy val sumOfSquares: List[Int] => Int = {
+    val squareOfNum: Int => Int = pow(_ ,2)
+    val func = (acc: Int, elem: Int) => sum(acc, squareOfNum(elem))
+    ListFunctions.fold(0, _)(func)
+  }
 
   /**
-    * Сумма кубов чисел в списке
+    * Произведение кубов чисел в списке
     */
-  lazy val multiplicationOfCubes: List[Int] => Int = ???
-
+  lazy val multiplicationOfCubes: List[Int] => Int = {
+    val cubeOfNum: Int => Int = pow(_, 3)
+    val func = (acc: Int, elem: Int) => multiply(acc, cubeOfNum(elem))
+    ListFunctions.fold(1, _)(func)
+  }
 }
