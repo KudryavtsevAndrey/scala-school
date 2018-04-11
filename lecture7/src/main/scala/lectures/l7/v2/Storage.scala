@@ -11,4 +11,6 @@ trait Storage[K, V] {
   def persist(id: K, item: V): Storage[K, V]
 }
 
-class MemoryStorage
+class MemoryStorage[T] extends Storage[T, Item[T]] {
+  override def persist(id: T, item: Item[T]): Storage[T, Item[T]] = ???
+}
