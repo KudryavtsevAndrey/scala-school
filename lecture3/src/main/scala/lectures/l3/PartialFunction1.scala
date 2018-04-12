@@ -11,7 +11,7 @@ package lectures.l3
   *
   * Менять f1, f2, f3 нельзя.
   */
-class PartialFunction1 extends App {
+object PartialFunction1 extends App {
   val f1: PartialFunction[Int, Int] = {
     case x if x % 2 == 0 => x - 1
   }
@@ -24,10 +24,13 @@ class PartialFunction1 extends App {
     case x => x * 3
   }
 
+  def pipeline(fx: Seq[PartialFunction[Int, Int]]): Int => Int = {
+    val id: PartialFunction[Int, Int] = PartialFunction(x => x)
+    fx.foldLeft(id)(_ andThen _.orElse(id))
+  }
+
   for (x <- 1 to 100) {
     val f = pipeline(Seq(f1, f2, f3))
     println(s"$x -> ${f(x)}")
   }
-
-  def pipeline(fx: Seq[PartialFunction[Int, Int]]): Int => Int = ???
 }

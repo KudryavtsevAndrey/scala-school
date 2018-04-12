@@ -10,10 +10,20 @@ case class Person(name: String, age: Int, address: Address)
   */
 object PatternMatching3 extends App {
   object RussianPerson {
-    def unapply(person: Person): Option[String] = ???
+    def unapply(person: Person): Option[String] = {
+      person match {
+        case p if Seq("Moscow", "Saint Petersburg").contains(p.address.city) => Some("Russian")
+        case _ => None
+      }
+    }
   }
 
-  def fromRussia(person: Person): Boolean = ???
+  def fromRussia(person: Person): Boolean = {
+    person match {
+      case RussianPerson("Russian") => true
+      case _ => false
+    }
+  }
 
   val cities = Seq(
     "London",
