@@ -1,5 +1,6 @@
 package lectures.l4
 
+import scala.annotation.tailrec
 import scala.util.Random
 
 object Collection3 extends App {
@@ -29,9 +30,30 @@ object Collection3 extends App {
     require(passengers.nonEmpty, "Stateroom is empty")
   }
 
-  def sort(list: Seq[Person]): Seq[Stateroom] = ???
+  def sort(list: Seq[Person]): Seq[Stateroom] = {
+    val malesCount = list.count(_ == Male)
+    val femalesCount = list.count(_ == Female)
+    val helisCount = list.count(_ == AttackHelicopter)
+    val leftOver = (Seq.fill(malesCount % 4)(Male) ++ Seq.fill(femalesCount % 4)(Female)).splitAt(4)
 
-  def count(list: Seq[Stateroom]): Map[StateroomType, Int] = ???
+    Seq.fill[Stateroom](malesCount / 4)(Stateroom(Seq.fill(4)(Male))) ++
+      Seq.fill[Stateroom](femalesCount / 4)(Stateroom(Seq.fill(4)(Female))) ++
+      Seq.fill[Stateroom](helisCount / 4)(Stateroom(Seq.fill(4)(AttackHelicopter))) ++
+      Seq(Stateroom(leftOver._1), Stateroom(leftOver._2),
+        Stateroom(Seq.fill(helisCount % 4)(AttackHelicopter))).filterNot(_.passengers.isEmpty)
+  }
+
+  def getType(room: Stateroom): StateroomType = {
+    room.passengers match {
+      case p if p.forall(_ == Male) => MaleOnlyStateroom
+      case p if p.forall(_ == Female) => FemaleOnlyStateroom
+      case _ => MixedStateroom
+    }
+  }
+
+  def count(list: Seq[Stateroom]): Map[StateroomType, Int] = {
+    list.map(x => getType(x) -> list.count(_ == x)).toMap
+  }
 
   val males = Seq.fill(Random.nextInt(20))(Male)
   val females = Seq.fill(Random.nextInt(20))(Female)
